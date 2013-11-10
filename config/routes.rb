@@ -1,12 +1,19 @@
 SampleApp::Application.routes.draw do
   resources :users
+  resources :sessions, only: [:new, :create, :destroy]
+  #As with the Users resource, we can use the resources method to define the standard RESTful routes.
   root  'static_pages#home'
-  match '/signup',  to: 'users#new',             via: 'get' 
+  match '/signup',  to: 'users#new',            via: 'get' 
+  match '/signin',  to: 'sessions#new',         via: 'get'
+  match '/signout', to: 'sessions#destroy',     via: 'delete'
+  #indicates that it should be invoked using an HTTP DELETE request.
   match '/help',    to: 'static_pages#help',    via: 'get'
   match '/about',   to: 'static_pages#about',   via: 'get'
-  #matches at GET request for ’/about’ and routes it to the about action in the StaticPages 
-  #controller.
   match '/contact', to: 'static_pages#contact', via: 'get'
+  #matches at GET request for ’/contact’ and routes it to the about action in the StaticPages 
+  #controller.
+
+  resources :sessions, only: [:new, :create, :destroy]
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
