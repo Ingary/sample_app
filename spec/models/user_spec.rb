@@ -16,9 +16,21 @@ describe User do
   it { should respond_to(:password_confirmation) }
   it { should respond_to(:remember_token) }
   it { should respond_to(:authenticate) }
+  it { should respond_to(:admin) }
 
   it { should be_valid }
+  it { should_not be_admin }
 
+  describe "with admin attribute set to 'true'" do
+    before do
+      @user.save!
+      @user.toggle!(:admin)
+      #toggle! cambia el atributo admin de false a true.
+    end
+
+    it { should be_admin }
+    #implies (via the RSpec boolean convention) that the user should have an admin? boolean method.
+  end
 
   describe "when name is not present" do
     before { @user.name = " " }
