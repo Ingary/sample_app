@@ -8,4 +8,15 @@
       </h1>
     </section>
   </aside>
+
+  <div class="span8">
+    <% if @user.microposts.any? %>
+      <h3>Microposts (<%= @user.microposts.count %>)</h3>
+      <ol class="microposts">
+        <%= render @microposts %>
+          <!--Here Rails infers that @microposts is a list of Micropost objects; moreover, when called with a collection of microposts, Rails automatically iterates through them and renders each one with the _micropost.html.erb partial.--> 
+      </ol>
+      <%= will_paginate @microposts %>
+    <% end %>
+  </div>
 </div>

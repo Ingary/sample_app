@@ -17,6 +17,7 @@ describe User do
   it { should respond_to(:remember_token) }
   it { should respond_to(:authenticate) }
   it { should respond_to(:admin) }
+  it { should respond_to(:microposts) }
 
   it { should be_valid }
   it { should_not be_admin }
@@ -128,4 +129,46 @@ describe User do
     #is equivalent to, 
     #it { expect(@user.remember_token).not_to be_blank }
   end
+
+  describe "micropost associations" do
+
+    before { @user.save }
+    #let variables, they only spring into existence when referenced. 
+    #The problem is that we want the microposts to exist immediately, so that the timestamps are in 
+    #the right order and so that @user.microposts isn’t empty. We accomplish this with let!, which 
+    #forces the corresponding variable to come into existence immediately.
+    let!(:older_micropost) do
+      FactoryGirl.create(:micropost, user: @user, created_at: 1.day.ago)
+    end
+    let!(:newer_micropost) do
+      FactoryGirl.create(:micropost, user: @user, created_at: 1.hour.ago)
+    end
+
+    it "should have the right microposts in the right order" do
+      expect(@user.microposts.to_a).to eq [newer_micropost, older_micropost]
+      #indicating that the posts should be ordered newest first. 
+    end
+
+    it "should destroy associated microposts" do
+      microposts = @user.microposts.to_a
+      @user.destroy
+      expect(microposts).not_to be_empty
+      microposts.each do |micropost|
+        expect(Micropost.where(id: micropost.id)).to be_empty
+      end
+    end
+
+    describe "status" do
+      let(:unfollowed_post) do
+        FactoryGirl.create(:micropost, user: FactoryGirl.create(:user))
+      end
+      
+      #test that the feed method includes the current user’s microposts but excludes the posts of a different user.
+      its(:feed) { should include(newer_micropost) }
+      its(:feed) { should include(older_micropost) }
+      its(:feed) { should_not include(unfollowed_post) }
+    end
+
+  end
+  
 end
