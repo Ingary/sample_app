@@ -17,7 +17,7 @@ describe "User pages" do
     describe "pagination" do
 
       before(:all) { 30.times { FactoryGirl.create(:user) } }
-      #el test fallaba dado que esta diseñado para 30 objectos usuario por página, mientras que en 
+      #el test fallaba dado que esta diseñado para 30 objetos usuario por página, mientras que en 
       #el controlador se había específicado un número superior por lo cual, fallaba.
       after(:all)  { User.delete_all }
 
@@ -68,7 +68,6 @@ describe "User pages" do
       it { should have_content(m2.content) }
       it { should have_content(user.microposts.count) }
     end
-    
   end
 
   describe "signup page" do

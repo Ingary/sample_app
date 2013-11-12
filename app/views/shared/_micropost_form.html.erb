@@ -1,8 +1,22 @@
+<script>
+function updateCountdown() {
+    // 140 is the max message length
+    var remaining = 140 - jQuery('#micropost_content').val().length;
+    jQuery('.countdown').text(remaining + ' characters remaining');
+}
+
+jQuery(document).ready(function($) {
+    updateCountdown();
+    $('#micropost_content').change(updateCountdown);
+    $('#micropost_content').keyup(updateCountdown);
+});
+</script>
 <%= form_for(@micropost) do |f| %>
   <%= render 'shared/error_messages', object: f.object %>
   <!--In other words, object: f.object creates a variable called object in the error_messages partial. -->
   <div class="field">
     <%= f.text_area :content, placeholder: "Compose new micropost..." %>
+    <span class="countdown"></span>
   </div>
   <%= f.submit "Post", class: "btn btn-large btn-primary" %>
 <% end %>
