@@ -1,0 +1,20 @@
+<% @user ||= current_user %>
+<!--As discussed in Box 8.2, this does nothing when @user is not nil (as on a profile page), but when it is (as on the Home page) it sets @user to the current user.-->
+<div class="stats">
+  <a href="<%= following_user_path(@user) %>">
+    <strong id="following" class="stat">
+      <!--One final detail worth noting is the presence of CSS ids on some elements, as in
+        <strong id="following" class="stat">
+        </strong>
+      This is for the benefit of the Ajax implementation in Section 11.2.5, which accesses elements on the page using their unique ids. -->
+      <%= @user.followed_users.count %>
+    </strong>
+    following
+  </a>
+  <a href="<%= followers_user_path(@user) %>">
+    <strong id="followers" class="stat">
+      <%= @user.followers.count %>
+    </strong>
+    followers
+  </a>
+</div>

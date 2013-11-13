@@ -1,8 +1,17 @@
 SampleApp::Application.routes.draw do
-  resources :users
+  resources :users do
+    member do
+      get :following, :followers
+      #Since both pages will be showing data, we use get to arrange for the URLs to respond to GET requests 
+      #(as required by the REST convention for such pages). and the member method means that the routes 
+      #respond to URLs containing the user id.
+    end
+  end
   resources :sessions, only: [:new, :create, :destroy]
   #As with the Users resource, we can use the resources method to define the standard RESTful routes.
   resources :microposts, only: [:create, :destroy]
+  resources :relationships, only: [:create, :destroy]
+
   root  'static_pages#home'
   match '/signup',  to: 'users#new',            via: 'get' 
   match '/signin',  to: 'sessions#new',         via: 'get'
@@ -13,8 +22,6 @@ SampleApp::Application.routes.draw do
   match '/contact', to: 'static_pages#contact', via: 'get'
   #matches at GET request for ’/contact’ and routes it to the about action in the StaticPages 
   #controller.
-
-  resources :sessions, only: [:new, :create, :destroy]
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
